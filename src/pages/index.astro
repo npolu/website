@@ -1,0 +1,408 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {
+  site,
+  about,
+  experience,
+  skills,
+  education,
+  certifications,
+} from '../data/site';
+
+// Latest 3 blog posts for the home-page preview
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<BaseLayout>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-inner rise">
+      <span class="eyebrow">{site.role}</span>
+      <h1>{site.name}</h1>
+      <p class="lede">{site.tagline}</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contact">Get in touch</a>
+        <a class="btn btn-ghost" href={site.cvFile} target="_blank" rel="noopener">
+          Download CV ↓
+        </a>
+      </div>
+      <p class="hero-loc">{site.location}</p>
+    </div>
+  </section>
+
+  <hr class="rule wrap" />
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">About</span>
+        <h2>A career at the intersection of lab science and IT compliance</h2>
+      </div>
+      <div class="prose">
+        {about.paragraphs.map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" class="alt">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Experience</span>
+        <h2>Where I've worked</h2>
+      </div>
+      <div class="timeline">
+        {
+          experience.map((job) => (
+            <article class="job">
+              <div class="job-period">{job.period}</div>
+              <div class="job-body">
+                <h3>{job.role}</h3>
+                <p class="job-company">
+                  {job.company}
+                  {job.location && <span class="job-loc"> · {job.location}</span>}
+                </p>
+                <ul>
+                  {job.highlights.map((h) => (
+                    <li>{h}</li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Expertise</span>
+        <h2>Areas of focus</h2>
+      </div>
+      <div class="skill-grid">
+        {
+          skills.map((s) => (
+            <div class="skill-card">
+              <h3>{s.group}</h3>
+              <ul>
+                {s.items.map((i) => (
+                  <li>{i}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education" class="alt">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Education &amp; Credentials</span>
+        <h2>Training</h2>
+      </div>
+      <div class="edu-grid">
+        <div>
+          {
+            education.map((e) => (
+              <div class="edu-item">
+                <h3>{e.credential}</h3>
+                <p>
+                  {e.institution} <span class="edu-period">· {e.period}</span>
+                </p>
+                {e.detail && <p class="edu-detail">{e.detail}</p>}
+              </div>
+            ))
+          }
+        </div>
+        <div>
+          <h3 class="cert-title">Certifications</h3>
+          <ul class="cert-list">
+            {certifications.map((c) => <li>{c}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LATEST WRITING -->
+  <section id="writing">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Blog</span>
+        <h2>Latest writing</h2>
+      </div>
+      {
+        posts.length === 0 ? (
+          <p>No posts yet — your first article will appear here.</p>
+        ) : (
+          <div class="post-list">
+            {posts.map((post) => (
+              <a class="post-row" href={`/blog/${post.id}/`}>
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {fmt(post.data.pubDate)}
+                </time>
+                <span class="post-title">{post.data.title}</span>
+                <span class="post-arrow">→</span>
+              </a>
+            ))}
+          </div>
+        )
+      }
+      <p class="more"><a href="/blog">Read all posts →</a></p>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="alt contact">
+    <div class="wrap">
+      <span class="eyebrow">Contact</span>
+      <h2>Let's connect</h2>
+      <p class="contact-lede">
+        Open to conversations about lab informatics, computer system validation, and
+        data integrity in regulated environments.
+      </p>
+      <div class="contact-actions">
+        <a class="btn btn-primary" href={`mailto:${site.email}`}>{site.email}</a>
+        <a class="btn btn-ghost" href={site.linkedin} target="_blank" rel="noopener">
+          LinkedIn
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(4rem, 12vw, 8rem);
+  }
+  .hero-inner {
+    max-width: 22ch;
+  }
+  .lede {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+    line-height: 1.4;
+    color: var(--ink-soft);
+    max-width: 30ch;
+    margin-block: 1.2rem 2rem;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+  }
+  .hero-loc {
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  hr.rule {
+    margin-inline: auto;
+  }
+  .alt {
+    background: var(--paper-2);
+  }
+  .prose {
+    max-width: 62ch;
+    font-size: 1.08rem;
+  }
+
+  /* Experience timeline */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+  .job {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 1.5rem;
+  }
+  .job-period {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--teal-deep);
+    padding-top: 0.3rem;
+  }
+  .job-body h3 {
+    margin-bottom: 0.15rem;
+  }
+  .job-company {
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+  }
+  .job-loc {
+    font-weight: 400;
+    color: var(--ink-faint);
+  }
+  .job-body ul {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+  .job-body li {
+    color: var(--ink-soft);
+    margin-bottom: 0.35rem;
+  }
+
+  /* Skills */
+  .skill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+  .skill-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+  }
+  .skill-card h3 {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.9rem;
+  }
+  .skill-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .skill-card li {
+    padding: 0.3rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.98rem;
+    color: var(--ink-soft);
+  }
+  .skill-card li:last-child {
+    border-bottom: 0;
+  }
+
+  /* Education */
+  .edu-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 2.5rem;
+  }
+  .edu-item {
+    margin-bottom: 1.5rem;
+  }
+  .edu-item h3 {
+    margin-bottom: 0.1rem;
+  }
+  .edu-period {
+    color: var(--ink-faint);
+  }
+  .edu-detail {
+    font-size: 0.95rem;
+  }
+  .cert-title {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  .cert-list {
+    padding-left: 1.1rem;
+  }
+  .cert-list li {
+    color: var(--ink-soft);
+    margin-bottom: 0.4rem;
+  }
+
+  /* Posts */
+  .post-list {
+    border-top: 1px solid var(--line);
+  }
+  .post-row {
+    display: grid;
+    grid-template-columns: 130px 1fr auto;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .post-row:hover {
+    text-decoration: none;
+  }
+  .post-row:hover .post-title {
+    color: var(--teal-deep);
+  }
+  .post-row:hover .post-arrow {
+    transform: translateX(4px);
+  }
+  .post-row time {
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+  }
+  .post-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+  .post-arrow {
+    color: var(--teal);
+    transition: transform 0.2s ease;
+  }
+  .more {
+    margin-top: 1.5rem;
+    font-weight: 600;
+  }
+
+  /* Contact */
+  .contact {
+    text-align: center;
+  }
+  .contact .section-head,
+  .contact .eyebrow {
+    margin-inline: auto;
+  }
+  .contact-lede {
+    max-width: 40ch;
+    margin-inline: auto;
+    margin-bottom: 2rem;
+  }
+  .contact-actions {
+    display: flex;
+    gap: 0.9rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 680px) {
+    .job {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .edu-grid {
+      grid-template-columns: 1fr;
+    }
+    .post-row {
+      grid-template-columns: 1fr auto;
+    }
+    .post-row time {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

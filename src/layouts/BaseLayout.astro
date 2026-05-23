@@ -1,0 +1,153 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${site.name} — ${site.role}`,
+  description = site.tagline,
+} = Astro.props;
+
+const nav = [
+  { href: '/#about', label: 'About' },
+  { href: '/#experience', label: 'Experience' },
+  { href: '/#skills', label: 'Expertise' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/#contact', label: 'Contact' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="generator" content={Astro.generator} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a href="/" class="brand">{site.name}</a>
+        <nav class="nav" aria-label="Primary">
+          {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap footer-inner">
+        <p class="footer-name">{site.name}</p>
+        <nav class="footer-links" aria-label="Footer">
+          <a href={`mailto:${site.email}`}>Email</a>
+          <a href={site.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+          <a href={site.github} target="_blank" rel="noopener">GitHub</a>
+        </nav>
+        <p class="footer-meta">
+          © {new Date().getFullYear()} {site.name}. Built with Astro.
+        </p>
+      </div>
+    </footer>
+
+    <style>
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: color-mix(in srgb, var(--paper) 88%, transparent);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line);
+      }
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 68px;
+      }
+      .brand {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .brand:hover {
+        text-decoration: none;
+        color: var(--teal-deep);
+      }
+      .nav {
+        display: flex;
+        gap: clamp(0.9rem, 2.5vw, 2rem);
+      }
+      .nav a {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--ink-soft);
+      }
+      .nav a:hover {
+        color: var(--teal-deep);
+        text-decoration: none;
+      }
+      .site-footer {
+        border-top: 1px solid var(--line);
+        background: var(--paper-2);
+        padding-block: 2.5rem;
+        margin-top: 2rem;
+      }
+      .footer-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center;
+        text-align: center;
+      }
+      .footer-name {
+        font-family: var(--font-display);
+        font-size: 1.1rem;
+        color: var(--ink);
+        margin: 0;
+      }
+      .footer-links {
+        display: flex;
+        gap: 1.5rem;
+      }
+      .footer-links a {
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+      .footer-meta {
+        font-size: 0.82rem;
+        color: var(--ink-faint);
+        margin: 0;
+      }
+      @media (max-width: 560px) {
+        .nav {
+          font-size: 0.85rem;
+        }
+        .nav a:nth-child(1),
+        .nav a:nth-child(3) {
+          display: none;
+        }
+      }
+    </style>
+  </body>
+</html>

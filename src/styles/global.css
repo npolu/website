@@ -1,0 +1,187 @@
+/* =========================================================================
+   Design system — "Clinical Editorial"
+   Paper-warm background, deep slate ink, teal accent. Calm and credible.
+   Fonts loaded in BaseLayout.astro (Fraunces display + Public Sans body).
+   Adjust the variables below to re-theme the whole site at once.
+   ========================================================================= */
+
+:root {
+  /* Palette */
+  --paper: #faf8f3;
+  --paper-2: #f3efe6;
+  --ink: #1b2530;
+  --ink-soft: #46535f;
+  --ink-faint: #8a96a0;
+  --line: #e3ddd0;
+  --teal: #0f6e6a;
+  --teal-deep: #0a4f4c;
+  --teal-tint: #e6f0ee;
+  --amber: #b4762a; /* secondary accent (used sparingly) */
+
+  /* Type */
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Rhythm */
+  --maxw: 1080px;
+  --gap: clamp(1.5rem, 4vw, 3rem);
+  --radius: 4px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Layout helpers */
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 2.5rem);
+}
+
+section {
+  padding-block: clamp(3.5rem, 8vw, 6rem);
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 0 0.4em;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  font-weight: 600;
+}
+
+h2 {
+  font-size: clamp(1.9rem, 4vw, 2.75rem);
+}
+
+h3 {
+  font-size: 1.3rem;
+}
+
+p {
+  margin: 0 0 1rem;
+  color: var(--ink-soft);
+}
+
+a {
+  color: var(--teal-deep);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Eyebrow / small-caps label */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.section-head {
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+  max-width: 46ch;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--teal);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--teal);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--teal-deep);
+  border-color: var(--teal-deep);
+  text-decoration: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--teal-deep);
+}
+
+.btn-ghost:hover {
+  background: var(--teal-tint);
+  text-decoration: none;
+}
+
+/* Hairline divider */
+.rule {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+}
+
+/* Reveal-on-load animation */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise {
+  animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

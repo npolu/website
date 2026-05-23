@@ -1,0 +1,117 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout title="Blog" description="Writing on lab informatics, computer system validation, and data integrity.">
+  <section class="blog-head">
+    <div class="wrap rise">
+      <span class="eyebrow">Blog</span>
+      <h1>Writing</h1>
+      <p class="lede">
+        Notes on lab informatics, computer system validation, and data integrity in
+        regulated biopharma environments.
+      </p>
+    </div>
+  </section>
+
+  <section class="blog-list-section">
+    <div class="wrap">
+      {
+        posts.length === 0 ? (
+          <p>No posts published yet.</p>
+        ) : (
+          <ul class="blog-list">
+            {posts.map((post) => (
+              <li>
+                <a href={`/blog/${post.id}/`} class="entry">
+                  <time datetime={post.data.pubDate.toISOString()}>
+                    {fmt(post.data.pubDate)}
+                  </time>
+                  <h2>{post.data.title}</h2>
+                  <p>{post.data.description}</p>
+                  {post.data.tags.length > 0 && (
+                    <div class="tags">
+                      {post.data.tags.map((t) => (
+                        <span class="tag">{t}</span>
+                      ))}
+                    </div>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .blog-head {
+    padding-block: clamp(3rem, 8vw, 5rem) 1rem;
+  }
+  .blog-head .lede {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+    color: var(--ink-soft);
+    max-width: 45ch;
+    margin-top: 0.5rem;
+  }
+  .blog-list-section {
+    padding-block: 2rem 5rem;
+  }
+  .blog-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .entry {
+    display: block;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .entry:hover {
+    text-decoration: none;
+  }
+  .entry:hover h2 {
+    color: var(--teal-deep);
+  }
+  .entry time {
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+  }
+  .entry h2 {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    margin: 0.4rem 0 0.5rem;
+  }
+  .entry p {
+    max-width: 60ch;
+    margin: 0 0 0.8rem;
+  }
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--teal);
+    background: var(--teal-tint);
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+  }
+</style>
